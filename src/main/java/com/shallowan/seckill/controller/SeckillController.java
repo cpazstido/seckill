@@ -215,6 +215,13 @@ public class SeckillController implements InitializingBean {
         return Result.success(path);
     }
 
+    @GetMapping("/index")
+    @AccessLimit(seconds = 10, maxCount = 5)
+    @ResponseBody
+    public Result<String> getIndex(){
+        return Result.success("index");
+    }
+
 
     /**
      * orderId:成功
