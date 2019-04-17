@@ -120,6 +120,7 @@ public class SeckillController implements InitializingBean {
         }
         redisService.delete(OrderKey.getSeckillOrderByUidGid);
         redisService.delete(SeckillKey.isGoodsOver);
+        redisService.delete(GoodsKey.getGoodsList);
         seckillService.reset(goodsVOList);
         return Result.success(true);
     }
@@ -178,14 +179,15 @@ public class SeckillController implements InitializingBean {
             return Result.error(CodeMsg.SECKILL_OVER);
         }
 
-        //预减库存
+        //预减库存（使用ruby脚本，原子性的操作->扣减库存和记录下单用户，用于防止用户并发下单来重复秒杀）
         long stock = redisService.decr(GoodsKey.getSeckillGoodsStock, "" + goodsId);
         if (stock < 0) {
             localOverMap.put(goodsId, true);
             return Result.error(CodeMsg.SECKILL_OVER);
         }
 
-        //判断是否已经秒杀到了
+        //判断是否已经秒杀到了（感觉应该先验证是否已经秒杀到，再预减库存）
+        //修改点：这里根据下单用户||redis订单来验证是否重复秒杀
         SeckillOrder seckillOrder = orderService.getSeckillOrderByUserIdGoodsId(seckillUser.getId(), goodsId);
         if (seckillOrder != null) {
             return Result.error(CodeMsg.REPEATE_SECKILL);

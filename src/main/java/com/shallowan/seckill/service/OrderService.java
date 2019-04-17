@@ -35,6 +35,7 @@ public class OrderService {
 
     @Transactional
     public OrderInfo createOrder(SeckillUser seckillUser, GoodsVO goods) {
+        //这里的订单可以使用userid、goodsid做唯一主键，防止重复秒杀
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setCreateTime(new Date());
         orderInfo.setDeliveryAddrId(0L);
