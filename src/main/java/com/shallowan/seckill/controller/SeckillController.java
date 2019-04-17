@@ -40,6 +40,9 @@ import java.util.Map;
  * localhost:8080/login/to_login
  * 账号密码：123     123456
  *
+ * 2、重置数据库
+ * localhost:8080/seckill/reset
+ *
  *
  *
  * @author ShallowAn
@@ -71,7 +74,7 @@ import java.util.Map;
  * 用拦截器减少对业务侵入
  */
 @Controller
-@RequestMapping("/seckill")
+    @RequestMapping("/seckill")
 public class SeckillController implements InitializingBean {
     @Autowired
     private GoodsService goodsService;
